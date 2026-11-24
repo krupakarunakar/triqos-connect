@@ -70,6 +70,32 @@
     </section>
     <p class="copyright">© <span id="year"></span> TRIQOS. All rights reserved.</p>
   </main>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+<script>
+  // Keep the copyright year updated
+  document.getElementById('year').textContent =
+    new Date().getFullYear();
+
+  // Send QR campaign data to Google Sheets in the background
+  (function () {
+    const TRACKING_URL =
+      'https://script.google.com/macros/s/AKfycbx8z1FgRv4YuQSjGW6fWdT-2ozknwUKik0lgkxc4A1Bffj3bGNUgJYitI_RDueqmKwj/exec';
+
+    const params = new URLSearchParams(window.location.search);
+    const campaign = params.get('campaign') || 'TRIQOS';
+
+    const body = new URLSearchParams();
+    body.append('campaign', campaign);
+
+    fetch(TRACKING_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: body,
+      keepalive: true
+    }).catch(function (error) {
+      console.error('TRIQOS tracking request failed:', error);
+    });
+  })();
+</script>
 </body>
 </html>
